@@ -1,10 +1,20 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { getFormattedDate } from '../helper/date'
+import { useNavigation } from '@react-navigation/native'
 
 export default function CourseItem({amount,date,id,description}) {
+  const navigation=useNavigation();
+  
+  function coursePress(){
+    navigation.navigate('ManageCourse',{
+      courseId:id,
+    })
+  }
+
+  
   return (
-    <Pressable>
+    <Pressable onPress={coursePress}>
       <View style={styles.courseContainer}>
       <View >
         <Text  style={styles.description}>{description}</Text>
@@ -37,6 +47,7 @@ const styles = StyleSheet.create({
   description:{
     fontSize:15,
     fontWeight:'bold',
+    marginBottom:4,
     color:'#000',
   },
   priceContainer:{
