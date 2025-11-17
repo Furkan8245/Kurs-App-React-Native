@@ -5,13 +5,12 @@ import { useNavigation } from '@react-navigation/native'
 
 export default function CourseItem({amount,date,id,description}) {
   const navigation=useNavigation();
-  
+
   function coursePress(){
     navigation.navigate('ManageCourse',{
       courseId:id,
     })
   }
-
   
   return (
     <Pressable onPress={coursePress}>
