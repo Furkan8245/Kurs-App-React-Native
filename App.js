@@ -8,6 +8,7 @@ import RecentCourses from './screens/RecentCourses';
 import AllCourses from './screens/AllCourses';
 import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import CoursesContextProvider from './store/coursesContext';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -62,6 +63,7 @@ function CourseOverview() {
 
 export default function App() {
   return (
+    <CoursesContextProvider>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -72,6 +74,7 @@ export default function App() {
         <Stack.Screen name="ManageCourse" component={ManageCourse} />
       </Stack.Navigator>
     </NavigationContainer>
+    </CoursesContextProvider>
   );
 }
 
