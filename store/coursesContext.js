@@ -1,4 +1,4 @@
-import { createContext,useReducer } from "react";
+import { createContext, useReducer } from "react";
 
 const COURSES = [
   {
@@ -64,57 +64,65 @@ const COURSES = [
 ]
 
 export const CoursesContext = createContext({
-    courses: [],
-    addCourse: ({description, amount, date}) => {},
-    deleteCourse: (id) => {},
-    updateCourse: (id,{description, amount, date}) => {},
+  courses: [],
+  addCourse: ({ description, amount, date }) => {},
+  deleteCourse: (id) => {},
+  updateCourse: (id, { description, amount, date }) => {},
 });
 
-function coursesReducer(state,action){
-    switch(action.type){
-        case 'ADD':
-            const id = new Date().toString() + Math.random().toString();
-            return [{...action.payload, id:id},...state];
-            case 'DELETE':
-                return state.fiter((course)=>course.id !== action.payload);
-                case 'UPDATE':
-                    const updateSearchIndex = state.findIndex((course)=>course.id === action.payload.id
-                );
-                const UpdateSearch = state[updateSearchIndex];
-                const updatedItem = {...UpdateSearch,...action.payload.data}
-                const updatedCourses = [...state];
-                updatedCourses[updateSearchIndex] = updatedItem;    
-                return updatedCourses;
-                default:
-                    return state;
-                    
-    }
+function coursesReducer(state, action) {
+  switch (action.type) {
+    case "ADD":
+      const id = new Date().toString() + Math.random().toString();
+      return [{ ...action.payload, id: id }, ...state];
+
+    case "DELETE":
+      return state.filter((course) => course.id !== action.payload);
+
+    case "UPDATE":
+      const updateIndex = state.findIndex(
+        (course) => course.id === action.payload.id
+      );
+      const oldItem = state[updateIndex];
+      const updatedItem = { ...oldItem, ...action.payload.data };
+
+      const updatedCourses = [...state];
+      updatedCourses[updateIndex] = updatedItem;
+
+      return updatedCourses;
+
+    default:
+      return state;
+  }
 }
 
-function CoursesContextProvider({children}) {
+function CoursesContextProvider({ children }) {
+  const [coursesState, dispatch] = useReducer(coursesReducer, COURSES);
 
-    const [state, dispatch] = useReducer(coursesReducer, COURSES)
+  function addCourse(courseData) {
+    dispatch({ type: "ADD", payload: courseData });
+  }
 
-    function addCourse(courseData){
-        dispatch({type:'ADD',payload: courseData});
-    }
-    function deleteCourse(id){
-        dispatch({type:'DELETE',payload: id});
-    }
-    function updateCourse(id,courseData){
-        dispatch({type:'UPDATE',payload: {id:id,data:courseData}});
-    }
+  function deleteCourse(id) {
+    dispatch({ type: "DELETE", payload: id });
+  }
 
-    const value = {
-        courses:coursesData,
-        addCourse: addCourse,
-        deleteCourse: deleteCourse,
-        updateCourse: updateCourse,
-    };
+  function updateCourse(id, courseData) {
+    dispatch({ type: "UPDATE", payload: { id: id, data: courseData } });
+  }
 
-    return <CoursesContext.Provider value={value}>
-            {children}
-        </CoursesContext.Provider>
+  const value = {
+    courses: coursesState,
+    addCourse,
+    deleteCourse,
+    updateCourse,
+  };
+
+  return (
+    <CoursesContext.Provider value={value}>
+      {children}
+    </CoursesContext.Provider>
+  );
 }
 
 export default CoursesContextProvider;

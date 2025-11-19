@@ -2,8 +2,12 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useLayoutEffect } from 'react';
 import Feather from '@expo/vector-icons/Feather';
+import { useContext } from 'react';
+import { CoursesContext } from '../store/coursesContext';
+import { ToastAndroid } from 'react-native';
 
 export default function ManageCourse({route,navigation}) {
+  const coursesContext = useContext(CoursesContext);
   const courseId=route.params?.courseId;
   let isEditing=false;
   if(courseId)
@@ -18,10 +22,34 @@ export default function ManageCourse({route,navigation}) {
   },[navigation,isEditing]);
 
   function deleteCourse(){
+    coursesContext.deleteCourse(courseId);
+    ToastAndroid.show("Seçtiğiniz kurs başarıyla silindi!", ToastAndroid.SHORT);
     navigation.goBack();
   }
   function cancelHandler(){
     navigation.goBack();
+  }
+
+  function addOrUpdateHandler(){
+    if (isEditing) {
+      coursesContext.updateCourse(courseId,{
+        description:"Güncellenen Kurs",
+        amount:200,
+        date: new Date(),
+      });
+    ToastAndroid.show("Güncelleme Başarılı",ToastAndroid.SHORT);
+
+    }
+    else{
+       coursesContext.addCourse({
+        description:"Eklenen Kurs",
+        amount:200,
+        date: new Date(),
+      });
+
+      navigation.goBack();
+      ToastAndroid.show("Ekleme Başarılı",ToastAndroid.SHORT);
+    }
   }
 
   return (
@@ -34,7 +62,7 @@ export default function ManageCourse({route,navigation}) {
               </Text>
             </View>
           </Pressable>
-          <Pressable>
+          <Pressable onPress={addOrUpdateHandler}>
             <View style={styles.addOrDelete}>
               <Text style={styles.addOrDeleteText}>
                 {isEditing ? 'Güncelle' : 'Ekle'}
