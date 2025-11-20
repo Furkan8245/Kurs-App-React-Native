@@ -6,7 +6,7 @@ import { CoursesContext } from '../store/coursesContext';
 
 export default function AllCourses() {
 const coursesContext=useContext(CoursesContext);
- return <Courses courses={coursesContext.courses} coursesPeriod="Tüm Kurslar"/>;
+ return <Courses courses={coursesContext.courses} coursesPeriod="Tüm Kurslar" nullText="Herhangi bir kursa kaydınız olmamaktadır."/>;
 }
 
 const styles = StyleSheet.create({})

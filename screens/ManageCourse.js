@@ -5,6 +5,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { useContext } from 'react';
 import { CoursesContext } from '../store/coursesContext';
 import { ToastAndroid } from 'react-native';
+import CourseForm from '../components/CourseForm';
 
 export default function ManageCourse({route,navigation}) {
   const coursesContext = useContext(CoursesContext);
@@ -54,6 +55,7 @@ export default function ManageCourse({route,navigation}) {
 
   return (
     <View style={styles.container}>
+      <CourseForm />
         <View style={styles.buttons}>
           <Pressable onPress={cancelHandler}>
             <View style={styles.cancel}>
