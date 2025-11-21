@@ -1,8 +1,36 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Input from './Input'
+import { useState } from 'react'
+
 
 export default function CourseForm() {
+    const [inputs,setInputs] = useState({
+        amount:'',
+        date:'',
+        description:'',
+    })
+  
+   
+    function inputChange(inputIdentifier,enteredValue){
+        setInputs((currentInputs)=>{
+            return{
+                ...currentInputs,
+                [inputIdentifier]:enteredValue,
+            }
+        })
+    }
+
+ /*    function submitHandler(){
+        console.log("---- Form Gönderildi ----");
+        console.log("Miktar:",inputs.amount);
+        console.log("Tarih:",inputs.date);
+        console.log("Açıklama:",inputs.description);
+        console.log("-----------------");
+        
+
+        
+    } */
   return (
     <View style={styles.form}>
     <Text style={styles.courseInfo}>Kurs Bilgileri</Text>
@@ -12,7 +40,8 @@ export default function CourseForm() {
     label="Fiyat"
     textInputConfig={{
     keyboardType: 'numeric',
-    onChangeText:()=>{}
+    onChangeText: inputChange.bind(this,'amount'),
+    value:inputs.amount,
     }}
     />
     <Input 
@@ -22,7 +51,8 @@ export default function CourseForm() {
     placeHolder:'YYYY-AA-GG',
     keyboardaType:'decimal-pad',
     maxLength:12,
-    onChangeText:()=>{}
+   onChangeText: inputChange.bind(this,'date'),
+    value:inputs.date,
     }}
     />
     </View>
@@ -31,7 +61,8 @@ export default function CourseForm() {
     label="Başlık" 
     textInputConfig={{
     multiline:true,
-    onChangeText:()=>{}
+   onChangeText: inputChange.bind(this,'description'),
+    value:inputs.description,
     }}
     />
   </View>
