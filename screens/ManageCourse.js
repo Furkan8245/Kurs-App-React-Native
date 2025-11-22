@@ -11,6 +11,9 @@ export default function ManageCourse({route,navigation}) {
   const coursesContext = useContext(CoursesContext);
   const courseId=route.params?.courseId;
   let isEditing=false;
+
+  const selectedCourse = coursesContext.courses.find((course)=> course.id === courseId);
+
   if(courseId)
   {
     isEditing=true;
@@ -31,22 +34,14 @@ export default function ManageCourse({route,navigation}) {
     navigation.goBack();
   }
 
-  function addOrUpdateHandler(){
+  function addOrUpdateHandler(courseData){
     if (isEditing) {
-      coursesContext.updateCourse(courseId,{
-        description:"Güncellenen Kurs",
-        amount:200,
-        date: new Date(),
-      });
+      coursesContext.updateCourse(courseId, courseData);
     ToastAndroid.show("Güncelleme Başarılı",ToastAndroid.SHORT);
 
     }
     else{
-       coursesContext.addCourse({
-        description:"Eklenen Kurs",
-        amount:200,
-        date: new Date(),
-      });
+       coursesContext.addCourse(courseData);
 
       navigation.goBack();
       ToastAndroid.show("Ekleme Başarılı",ToastAndroid.SHORT);
@@ -55,23 +50,13 @@ export default function ManageCourse({route,navigation}) {
 
   return (
     <View style={styles.container}>
-      <CourseForm />
-        <View style={styles.buttons}>
-          <Pressable onPress={cancelHandler}>
-            <View style={styles.cancel}>
-              <Text style={styles.cancelText}>
-                İptal Et
-              </Text>
-            </View>
-          </Pressable>
-          <Pressable onPress={addOrUpdateHandler}>
-            <View style={styles.addOrDelete}>
-              <Text style={styles.addOrDeleteText}>
-                {isEditing ? 'Güncelle' : 'Ekle'}
-              </Text>
-            </View>
-          </Pressable>
-        </View>
+      <CourseForm 
+      buttonLabel={isEditing ? 'Güncelle' : 'Ekle'}
+      cancelHandler={cancelHandler} 
+      onSubmit={addOrUpdateHandler}
+      informationFill={selectedCourse}
+      />
+        
       {isEditing && (
         <View style={styles.deleteContainer}>
         <Feather name="trash" size={37} color="black" onPress={deleteCourse} />
@@ -93,45 +78,5 @@ const styles = StyleSheet.create({
     paddingTop:11,
     marginTop:16,
   },
-  buttons:{
-    flexDirection:'row',
-    justifyContent:'center',
-  },
-  cancel:{
-    backgroundColor: '#d42c2cff',
-  minWidth: 150,
-  marginRight: 10,
-  paddingHorizontal: 20,
-  paddingVertical: 12, 
-  alignItems: 'center',
-  borderRadius: 8, 
-  shadowColor: '#007AFF',
-  shadowOffset: { width: 0, height: 4 }, 
-  shadowOpacity: 0.3,
-  shadowRadius: 5,
-  elevation: 6,
-  },
-  cancelText:{
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  addOrDelete:{
-    backgroundColor: '#4CAF50',
-  minWidth: 150,
-  paddingHorizontal: 20,
-  paddingVertical: 12,
-  alignItems: 'center',
-  borderRadius: 8,
-  shadowColor: '#007AFF',
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.3,
-  shadowRadius: 5,
-  elevation: 6,
-  },
-  addOrDeleteText:{
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  
 });

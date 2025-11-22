@@ -1,22 +1,47 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Pressable,Alert } from 'react-native'
 import React, { useEffect } from 'react'
 import Input from './Input'
 import { useState } from 'react'
+import { getFormattedDate } from '../helper/date';
 
 
-export default function CourseForm() {
+export default function CourseForm({cancelHandler,buttonLabel,onSubmit,informationFill}) {
     const [inputs,setInputs] = useState({
-        amount:'',
-        date:'',
-        description:'',
-    })
+        amount:{value :informationFill ? informationFill.amount.toString() : '', isValid:true},
+        date: {value: informationFill ? getFormattedDate(informationFill.date): '', isValid:true},
+        description: {value : informationFill ? informationFill.description : '', isValid:true} 
+    });
+
+    function addOrUpdateHandler(){
+        const courseData = {
+            amount:Number(inputs.amount.value),
+            date: new Date(inputs.date.value),
+            description: inputs.description.value,
+
+        };
+        const priceIsValid = !isNaN(courseData.amount) && courseData.amount > 0;
+        const dateIsValid = courseData.date.toString() !== 'Invalid Date';
+        const descriptionIsValid = courseData.description.trim().length > 0;
+
+        if (!priceIsValid || !dateIsValid || !descriptionIsValid ) {
+            setInputs((currentInputs)=>{
+                return{
+                    amount: {value:currentInputs.amount.value, isValid:priceIsValid},
+                    date: {value : currentInputs.date.value, isValid:dateIsValid},
+                    description: {value: currentInputs.description.value, isValid:descriptionIsValid},
+                }
+            })
+            return;
+        }
+        onSubmit(courseData);
+    }
   
    
     function inputChange(inputIdentifier,enteredValue){
         setInputs((currentInputs)=>{
             return{
                 ...currentInputs,
-                [inputIdentifier]:enteredValue,
+                [inputIdentifier]:{value:enteredValue, isValid:true},
             }
         })
     }
@@ -41,7 +66,7 @@ export default function CourseForm() {
     textInputConfig={{
     keyboardType: 'numeric',
     onChangeText: inputChange.bind(this,'amount'),
-    value:inputs.amount,
+    value:inputs.amount.value,
     }}
     />
     <Input 
@@ -52,7 +77,7 @@ export default function CourseForm() {
     keyboardaType:'decimal-pad',
     maxLength:12,
    onChangeText: inputChange.bind(this,'date'),
-    value:inputs.date,
+    value:inputs.date.value,
     }}
     />
     </View>
@@ -62,9 +87,28 @@ export default function CourseForm() {
     textInputConfig={{
     multiline:true,
    onChangeText: inputChange.bind(this,'description'),
-    value:inputs.description,
+    value:inputs.description.value,
     }}
     />
+    
+
+    <View style={styles.buttons}>
+          <Pressable onPress={cancelHandler}>
+            <View style={styles.cancel}>
+              <Text style={styles.cancelText}>
+                İptal Et
+              </Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={addOrUpdateHandler}>
+            <View style={styles.addOrDelete}>
+              <Text style={styles.addOrDeleteText}>
+                {buttonLabel}
+                
+              </Text>
+            </View>
+          </Pressable>
+        </View>
   </View>
   );
   
@@ -90,4 +134,45 @@ const styles = StyleSheet.create({
         marginBottom:15,
         marginVertical:11,
     },
+    buttons:{
+    flexDirection:'row',
+    justifyContent:'center',
+  },
+  cancel:{
+    backgroundColor: '#d42c2cff',
+  minWidth: 150,
+  marginRight: 10,
+  paddingHorizontal: 20,
+  paddingVertical: 12, 
+  alignItems: 'center',
+  borderRadius: 8, 
+  shadowColor: '#007AFF',
+  shadowOffset: { width: 0, height: 4 }, 
+  shadowOpacity: 0.3,
+  shadowRadius: 5,
+  elevation: 6,
+  },
+  cancelText:{
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  addOrDelete:{
+    backgroundColor: '#4CAF50',
+  minWidth: 150,
+  paddingHorizontal: 20,
+  paddingVertical: 12,
+  alignItems: 'center',
+  borderRadius: 8,
+  shadowColor: '#007AFF',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.3,
+  shadowRadius: 5,
+  elevation: 6,
+  },
+  addOrDeleteText:{
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
