@@ -19,14 +19,14 @@ export default function CourseForm({cancelHandler,buttonLabel,onSubmit,informati
             description: inputs.description.value,
 
         };
-        const priceIsValid = !isNaN(courseData.amount) && courseData.amount > 0;
+        const priceIsValid = courseData.amount > 0;
         const dateIsValid = courseData.date.toString() !== 'Invalid Date';
         const descriptionIsValid = courseData.description.trim().length > 0;
 
         if (!priceIsValid || !dateIsValid || !descriptionIsValid ) {
             setInputs((currentInputs)=>{
                 return{
-                    amount: {value:currentInputs.amount.value, isValid:priceIsValid},
+                    amount: {value:Number(currentInputs.amount.value), isValid:priceIsValid},
                     date: {value : currentInputs.date.value, isValid:dateIsValid},
                     description: {value: currentInputs.description.value, isValid:descriptionIsValid},
                 }
@@ -63,6 +63,7 @@ export default function CourseForm({cancelHandler,buttonLabel,onSubmit,informati
     <Input 
     style={styles.flexAll}
     label="Fiyat"
+    invalid={!inputs.amount.isValid}
     textInputConfig={{
     keyboardType: 'numeric',
     onChangeText: inputChange.bind(this,'amount'),
@@ -72,6 +73,7 @@ export default function CourseForm({cancelHandler,buttonLabel,onSubmit,informati
     <Input 
      style={styles.flexAll}
     label="Tarih" 
+    invalid={!inputs.date.isValid}
     textInputConfig={{
     placeHolder:'YYYY-AA-GG',
     keyboardaType:'decimal-pad',
@@ -84,14 +86,25 @@ export default function CourseForm({cancelHandler,buttonLabel,onSubmit,informati
    
     <Input 
     label="Başlık" 
+    invalid={!inputs.description.isValid}
     textInputConfig={{
     multiline:true,
    onChangeText: inputChange.bind(this,'description'),
     value:inputs.description.value,
     }}
     />
+    <View style={styles.errorMessage}>
+      {!inputs.amount.isValid && (
+      <Text>Lütfen tutarı doğru formatta giriniz.</Text>
+    )}
+    {!inputs.date.isValid && (
+      <Text>Lütfen tarihi doğru formatta giriniz.</Text>
+    )}
+    {!inputs.description.isValid && (
+      <Text>Lütfen başlığı doğru formatta giriniz.</Text>
+    )}
+    </View>
     
-
     <View style={styles.buttons}>
           <Pressable onPress={cancelHandler}>
             <View style={styles.cancel}>
@@ -174,5 +187,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  errorMessage:{
+    alignItems:'center',
+    marginBottom:12,
+
   },
 });
