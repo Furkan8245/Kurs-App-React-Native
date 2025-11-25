@@ -42,8 +42,8 @@ export default function CourseForm({cancelHandler,buttonLabel,onSubmit,informati
             return{
                 ...currentInputs,
                 [inputIdentifier]:{value:enteredValue, isValid:true},
-            }
-        })
+            };
+        });
     }
 
  /*    function submitHandler(){

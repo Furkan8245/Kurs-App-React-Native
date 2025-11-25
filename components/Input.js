@@ -3,6 +3,7 @@ import React from 'react'
 
 export default function Input({label,textInputConfig,style, invalid}) {
     const inputStyles = [styles.textInputCnt];
+    
     if (textInputConfig && textInputConfig.multiline) {
         inputStyles.push(styles.inputMultiline);
     }
@@ -30,6 +31,9 @@ const styles = StyleSheet.create({
     },
     textInputCnt:{
         backgroundColor:'#ceacc6ff',
+        padding:8,
+        borderRadius:10,    
+        fontSize:16,
     },
     inputMultiline:{
         minHeight:100,
@@ -38,9 +42,9 @@ const styles = StyleSheet.create({
         paddingHorizontal:8,
     },
     invalidLabel:{
-        color:'red',
+        color:'#aa0303ff',
     },
     invalidInput:{
-        backgroundColor:'#a50a55ff',
+        backgroundColor:'#aa0303ff',
     },
 })
