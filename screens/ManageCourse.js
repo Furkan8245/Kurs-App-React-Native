@@ -4,8 +4,8 @@ import { useLayoutEffect } from 'react';
 import Feather from '@expo/vector-icons/Feather';
 import { useContext } from 'react';
 import { CoursesContext } from '../store/coursesContext';
-import { ToastAndroid } from 'react-native';
 import CourseForm from '../components/CourseForm';
+import { storeCourse } from '../helper/http';
 
 export default function ManageCourse({route,navigation}) {
   const coursesContext = useContext(CoursesContext);
@@ -27,25 +27,25 @@ export default function ManageCourse({route,navigation}) {
 
   function deleteCourse(){
     coursesContext.deleteCourse(courseId);
-    ToastAndroid.show("Seçtiğiniz kurs başarıyla silindi!", ToastAndroid.SHORT);
     navigation.goBack();
   }
   function cancelHandler(){
     navigation.goBack();
   }
 
-  function addOrUpdateHandler(courseData){
-    if (isEditing) {
+  function addOrUpdateHandler(courseData)
+  {
+    if (isEditing) 
+    {
       coursesContext.updateCourse(courseId, courseData);
-    ToastAndroid.show("Güncelleme Başarılı",ToastAndroid.SHORT);
-
+     
     }
-    else{
-       coursesContext.addCourse(courseData);
-
-      navigation.goBack();
-      ToastAndroid.show("Ekleme Başarılı",ToastAndroid.SHORT);
+    else
+    {
+      storeCourse(courseData);
+      coursesContext.addCourse(courseData);
     }
+     navigation.goBack();
   }
 
   return (
