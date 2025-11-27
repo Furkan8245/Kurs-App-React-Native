@@ -1,72 +1,11 @@
 import { createContext, useReducer } from "react";
 
-const COURSES = [
-  {
-    id: '1',
-    description: 'C Programlama',
-    amount: 69,
-    date: new Date('2023-01-05')
-  },
-  {
-    id: '2',
-    description: 'Python ile Veri Analizi',
-    amount: 69,
-    date: new Date('2023-02-12')
-  },
-  {
-    id: '3',
-    description: 'JavaScript Temelleri',
-    amount: 69,
-    date: new Date('2023-03-08')
-  },
-  {
-    id: '4',
-    description: 'React Native Geliştirme',
-    amount: 69,
-    date: new Date('2023-04-15')
-  },
-  {
-    id: '5',
-    description: 'Go ile Backend Geliştirme',
-    amount: 69,
-    date: new Date('2023-05-22')
-  },
-  {
-    id: '6',
-    description: 'Kotlin ile Android',
-    amount: 69,
-    date: new Date('2023-06-18')
-  },
-  {
-    id: '7',
-    description: '.NET Core Web API',
-    amount: 69,
-    date: new Date('2023-07-30')
-  },
-  {
-    id: '8',
-    description: 'Veritabanı Yönetimi (SQL)',
-    amount: 69,
-    date: new Date('2023-08-25')
-  },
-  {
-    id: '9',
-    description: 'Yapay Zeka Giriş',
-    amount: 69,
-    date: new Date('2023-09-10')
-  },
-  {
-    id: '10',
-    description: 'Siber Güvenlik Temelleri',
-    amount: 69,
-    date: new Date('2023-10-05')
-  }
-]
 
 export const CoursesContext = createContext({
   courses: [],
   addCourse: ({ description, amount, date }) => {},
   deleteCourse: (id) => {},
+  setCourse: (courses) => {},
   updateCourse: (id, { description, amount, date }) => {},
 });
 
@@ -79,6 +18,8 @@ function coursesReducer(state, action) {
     case "DELETE":
       return state.filter((course) => course.id !== action.payload);
 
+      case 'SET':
+        return action.payload.recerse
     case "UPDATE":
       const updateIndex = state.findIndex(
         (course) => course.id === action.payload.id
@@ -97,7 +38,7 @@ function coursesReducer(state, action) {
 }
 
 function CoursesContextProvider({ children }) {
-  const [coursesState, dispatch] = useReducer(coursesReducer, COURSES);
+  const [coursesState, dispatch] = useReducer(coursesReducer, []);
 
   function addCourse(courseData) {
     dispatch({ type: "ADD", payload: courseData });
@@ -107,15 +48,20 @@ function CoursesContextProvider({ children }) {
     dispatch({ type: "DELETE", payload: id });
   }
 
+    function setCourse(courses) {
+    dispatch({ type: "SET", payload: courses });
+  }
+
   function updateCourse(id, courseData) {
     dispatch({ type: "UPDATE", payload: { id: id, data: courseData } });
   }
 
   const value = {
     courses: coursesState,
-    addCourse,
-    deleteCourse,
-    updateCourse,
+    addCourse: addCourse,
+    setCourse: setCourse,
+    deleteCourse: deleteCourse,
+    updateCourse: updateCourse,
   };
 
   return (
